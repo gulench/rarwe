@@ -4,14 +4,15 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <ul class="list-group songs">
-                {{#each model as |song|}}
-                    <li class="list-group-item">
-                        {{song.title}} by <em>{{song.band}}</em>
-                        <span class="rating pull-right">({{song.rating}})</span>
-                    </li>
-                {{/each}}
-            </ul>
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>{{link-to "Bands" "bands"}}</li>
+                        <li>{{link-to "Songs" "songs"}}</li>
+                    </ul>
+                </div>
+            </nav>
+            {{outlet}}
         </div>
     </div>
 </div>
