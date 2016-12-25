@@ -5,7 +5,7 @@ export default Ember.Controller.extend({
   songCreationStarted: false,
   sortBy: 'ratingDesc',
   searchTerm: '',
-  
+
   queryParams: {
     sortBy: 'sort',
     searchTerm: 's'
@@ -55,10 +55,6 @@ export default Ember.Controller.extend({
       song.set('rating', rating);
 
       return song.save();
-    },
-
-    setSorting: function(option) {
-      this.set('sortBy', option);
     }
   }
 });
