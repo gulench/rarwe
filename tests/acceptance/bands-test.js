@@ -1,6 +1,7 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'rarwe/tests/helpers/module-for-acceptance';
 import Pretender from 'pretender';
+import httpStubs from '../helpers/http-stubs';
 
 moduleForAcceptance('Acceptance | bands', {
   afterEach() {
@@ -12,29 +13,20 @@ var server;
 
 test('List bands', function(assert) {
   server = new Pretender(function() {
-    this.get('/bands', function() {
-      var response = {
-        data: [
-          {
-            id: 1,
-            type: 'bands',
-            attributes: {
-              name: 'Radiohead'
-            }
-          },
-          {
-            id: 2,
-            type: 'bands',
-            attributes: {
-              name: 'Long Distance Calling'
-            }
-          }
-        ]
-      };
-
-      return [200, { 'Content-Type': 'application/vnd.api+json' },
-      JSON.stringify(response)];
-    });
+    httpStubs.stubBands(this, [
+      {
+        id: 1,
+        attributes: {
+          name: 'Radiohead'
+        }
+      },
+      {
+        id: 2,
+        attributes: {
+          name: 'Long Distance Calling'
+        }
+      }
+    ]);
   });
 
   visit('/bands');
@@ -55,43 +47,17 @@ test('List bands', function(assert) {
 
 test('Create a new band', function(assert) {
   server = new Pretender(function() {
-    this.get('/bands', function() {
-      var response = {
-        data: [
-          {
-            id: 1,
-            type: 'bands',
-            attributes: {
-              name: 'Radiohead'
-            }
-          }
-        ]
-      };
-
-      return [200, { 'Content-Type': 'application/vnd.api+json' }, JSON.stringify(response)];
-    });
-
-    this.post('/bands', function() {
-      var response = {
-        data: {
-          id: 2,
-          type: 'bands',
-          attributes: {
-            name: 'Long Distance Calling'
-          }
+    httpStubs.stubBands(this, [
+      {
+        id: 1,
+        attributes: {
+          name: 'Radiohead'
         }
-      };
+      }
+    ]);
 
-      return [200, { 'Content-Type': 'application/vnd.api+json' }, JSON.stringify(response)];
-    });
-
-    this.get('/bands/2/songs', function() {
-      var response = {
-        data: []
-      };
-
-      return [200, { 'Content-Type': 'application/vnd.api+json' }, JSON.stringify(response)];
-    });
+    httpStubs.stubCreateBand(this, 2);
+    httpStubs.stubSongs(this, 2, []);
   });
 
   visit('/bands');
@@ -107,54 +73,18 @@ test('Create a new band', function(assert) {
 
 test('Create a new song in two steps', function (assert) {
   server = new Pretender(function () {
-    this.get('/bands', function () {
-      var response = {
-        data: [
-          {
-            id: 1,
-            type: 'bands',
-            attributes: {
-              name: 'Radiohead'
-            }
-          }
-        ]
-      };
-      return [200, { 'Content-Type': 'application/vnd.api+json' },
-        JSON.stringify(response)];
-    });
-
-    this.get('/bands/1', function () {
-      var response = {
-        data: {
-          id: 1,
-          type: 'bands',
-          attributes: {
-            name: 'Radiohead'
-          }
+    httpStubs.stubBands(this, [
+      {
+        id: 1,
+        attributes: {
+          name: 'Radiohead'
         }
-      };
-      return [200, { 'Content-Type': 'application/vnd.api+json' },
-        JSON.stringify(response)];
-    });
+      }
+    ]);
 
-    this.post('/songs', function () {
-      var response = {
-        data: {
-          id: 1,
-          type: 'songs',
-          attributes: {
-            name: 'Killer Cars'
-          }
-        }
-      };
-      return [200, { 'Content-Type': 'application/vnd.api+json' },
-        JSON.stringify(response)];
-    });
-
-    this.get('/bands/1/songs', () => {
-      return [200, { 'Content-Type': 'application/vnd.api+json' },
-        JSON.stringify({ data: [] })];
-    });
+    httpStubs.stubCreateSong(this, 1);
+    
+    httpStubs.stubSongs(this, 1, []);
   });
 
   selectBand('Radiohead');
