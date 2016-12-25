@@ -3,8 +3,19 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   title: '',
   songCreationStarted: false,
-  sortProperties: ['rating:desc', 'title:asc'],
+  sortBy: 'ratingDesc',
 
+  sortProperties: Ember.computed('sortBy', function() {
+    var options = {
+      'ratingDesc': 'rating:desc,title:asc',
+      'ratingAsc': 'rating:asc,title:asc',
+      'titleDesc': 'title:desc',
+      'titleAsc': 'title:asc'
+    };
+
+    return options[this.get('sortBy')].split(',');
+  }),
+  
   sortedSongs: Ember.computed.sort('model.songs', 'sortProperties'),
 
   canCreateSong: Ember.computed('songCreationStarted', 'model.songs.length', function() {
@@ -30,6 +41,10 @@ export default Ember.Controller.extend({
       song.set('rating', rating);
 
       return song.save();
+    },
+
+    setSorting: function(option) {
+      this.set('sortBy', option);
     }
   }
 });
