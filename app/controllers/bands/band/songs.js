@@ -5,6 +5,11 @@ export default Ember.Controller.extend({
   songCreationStarted: false,
   sortBy: 'ratingDesc',
   searchTerm: '',
+  
+  queryParams: {
+    sortBy: 'sort',
+    searchTerm: 's'
+  },
 
   matchingSongs: Ember.computed('model.songs.@each.title', 'searchTerm', function() {
     var searchTerm = this.get('searchTerm').toLowerCase();
