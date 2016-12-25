@@ -3,6 +3,9 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   title: '',
   songCreationStarted: false,
+  sortProperties: ['rating:desc', 'title:asc'],
+
+  sortedSongs: Ember.computed.sort('model.songs', 'sortProperties'),
 
   canCreateSong: Ember.computed('songCreationStarted', 'model.songs.length', function() {
     return this.get('songCreationStarted') || this.get('model.songs.length');

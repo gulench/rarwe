@@ -18,7 +18,7 @@
         </li>
     {{/if}}
 
-    {{#each model.songs as |song|}}
+    {{#each sortedSongs as |song|}}
         <li class="list-group-item song">
             {{song.title}}
             {{star-rating rating=song.rating item=song on-click=(action "updateRating")}}
